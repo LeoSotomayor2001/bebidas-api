@@ -31,32 +31,33 @@ class BebidaController extends Controller
             'imagen' => $request->imagen,
         ]);
 
-        return response()->json(['bebida' =>  $bebida], 201);
+        return response()->json(['bebida' =>  $bebida]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Bebida $bebida)
     {
-        //
+        return response()->json(['bebida' => $bebida], 200);
     }
 
-   
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Bebida $bebida)
     {
-        //
+        $bebida->delete();
+
+        return response()->json(['bebida eliminada'], 200);
     }
 }
