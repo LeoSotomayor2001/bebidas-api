@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BebidaRequest;
 use App\Models\Bebida;
+use Exception;
 use Illuminate\Http\Request;
 
 class BebidaController extends Controller
@@ -13,7 +14,7 @@ class BebidaController extends Controller
      */
     public function index()
     {
-        $bebidas=Bebida::select('id', 'nombre', 'tipo', 'imagen')->get();
+        $bebidas = Bebida::select('id', 'nombre', 'tipo', 'imagen')->get();
         return response()->json(['bebidas' => $bebidas], 200);
     }
 
@@ -23,12 +24,13 @@ class BebidaController extends Controller
      */
     public function store(BebidaRequest $request)
     {
-        $request->validated();
-        
+
+        $data = $request->validated();
+
         $bebida = Bebida::create([
-            'nombre' => $request->nombre,
-            'tipo' => $request->tipo,
-            'imagen' => $request->imagen,
+            'nombre' => $data['nombre'],
+            'tipo' => $data['tipo'],
+            'imagen' => $data['imagen'],
         ]);
 
         return response()->json(['bebida' =>  $bebida]);
@@ -48,7 +50,6 @@ class BebidaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        
     }
 
     /**
