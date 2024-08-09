@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BebidaRequest extends FormRequest
 {
@@ -21,21 +23,33 @@ class BebidaRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             'nombre' => 'required|string|max:255|min:3',
-            'tipo' => 'required|string|max:255',
-            'imagen' => 'required|string|max:255',
+            "tipo" => "required|string|max:255",
+            "imagen" => "required|string|max:255"
         ];
     }
 
     public function messages(): array
     {
         return [
-            'required' => 'El campo :attribute es obligatorio',
-            'min' => 'El campo :attribute debe tener al menos :min caracteres',
-            'max' => 'El campo :attribute debe tener como maximo :max caracteres',
-            'string' => 'El campo :attribute debe ser una cadena de caracteres',
-            
+            'nombre.required' => 'El nombre de la bebida es obligatorio.',
+            'nombre.string' => 'El nombre de la bebida debe ser una cadena de texto.',
+            'nombre.max' => 'El nombre de la bebida no puede tener más de :max caracteres.',
+            'nombre.min' => 'El nombre de la bebida debe tener minimo 3 caracteres.',
+            'tipo.required' => 'El tipo de la bebida es obligatorio.',
+            'tipo.string' => 'El tipo de la bebida debe ser una cadena de texto.',
+            'tipo.max' => 'El tipo de la bebida no puede tener más de :max caracteres.',
+            'imagen.required' => 'La imagen de la bebida es obligatoria.',
+            'imagen.string' => 'La imagen de la bebida debe ser una cadena de texto.',
+            'imagen.max' => 'La imagen de la bebida no puede tener más de :max caracteres.'
         ];
+    }
+
+    //se sobrescribe el método failedValidation de la clase FormRequest para personalizar el manejo de errores
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json($validator->errors(), 422));
     }
 }
