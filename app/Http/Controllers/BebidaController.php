@@ -30,7 +30,7 @@ class BebidaController extends Controller
             // Obtener el nombre del archivo para guardar en la base de datos
             $imageName = basename($imagePath);
         } else {
-            $imageName = null; 
+            $imageName = 'no image'; 
         }
 
         $bebida = Bebida::create([
@@ -84,6 +84,10 @@ class BebidaController extends Controller
         $bebidaExist = Bebida::find($id);
         if (!$bebidaExist) {
             return response()->json(['bebida no encontrada'], 404);
+        }
+        $imagenPath=public_path().'/storage/imagenes/'.$bebidaExist->imagen;
+        if(file_exists($imagenPath)){
+            unlink($imagenPath);
         }
         Bebida::destroy($id);
 

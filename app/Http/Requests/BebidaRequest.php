@@ -31,7 +31,7 @@ class BebidaRequest extends FormRequest
             'nombre.max' => 'El nombre no puede tener más de 255 caracteres',
             'tipo.required' => 'El tipo es obligatorio',
             'imagen.required' => 'Debe subir una imagen',
-            'imagen.image' => 'El archivo debe ser una imagen',
+            'imagen.image' => 'Debe subir una imagen',
             'imagen.max' => 'El archivo no debe superar los 2 MB',
             'imagen.mimes' => 'El archivo debe ser una imagen de tipo jpeg,png,jpg,gif,svg',
 
