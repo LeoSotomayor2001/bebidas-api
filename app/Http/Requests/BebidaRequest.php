@@ -15,12 +15,22 @@ class BebidaRequest extends FormRequest
 
     public function rules(): array
     {
-
-        return [
+        $rules = [
             'nombre' => 'required|string|max:255|min:3',
             'tipo' => 'required|string|max:255',
-            'imagen' => 'required|image|max:2048| mimes:jpeg,png,jpg,gif,svg',
         ];
+
+        // Si es una solicitud POST (creación), la imagen es obligatoria.
+        if ($this->isMethod('post')) {
+            $rules['imagen'] = 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg';
+        }
+
+        // Si es una solicitud PUT o PATCH (actualización), la imagen es opcional.
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['imagen'] = 'sometimes|image|max:2048|mimes:jpeg,png,jpg,gif,svg';
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -28,16 +38,15 @@ class BebidaRequest extends FormRequest
         return [
             'nombre.required' => 'El nombre es obligatorio',
             'nombre.min' => 'El nombre debe tener al menos 3 caracteres',
-            'nombre.max' => 'El nombre no puede tener más de 255 caracteres',
+            'nombre.max' => 'El nombre no puede tener más de 255 caracteres',
             'tipo.required' => 'El tipo es obligatorio',
             'imagen.required' => 'Debe subir una imagen',
-            'imagen.image' => 'Debe subir una imagen',
+            'imagen.image' => 'Debe subir una imagen válida',
             'imagen.max' => 'El archivo no debe superar los 2 MB',
-            'imagen.mimes' => 'El archivo debe ser una imagen de tipo jpeg,png,jpg,gif,svg',
-
+            'imagen.mimes' => 'El archivo debe ser una imagen de tipo jpeg, png, jpg, gif, svg',
         ];
     }
-    // Sobrescribe el método `failedValidation` que se ejecuta cuando falla la validación.
+
     protected function failedValidation(Validator $validator)
     {
         $errors = [];
