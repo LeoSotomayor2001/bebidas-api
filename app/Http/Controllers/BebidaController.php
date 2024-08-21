@@ -14,8 +14,13 @@ class BebidaController extends Controller
      */
     public function index()
     {
-        $bebidas = Bebida::select('id', 'nombre', 'tipo', 'imagen')->get();
-        return response()->json(['bebidas' => $bebidas], 200);
+        try{
+            $bebidas = Bebida::select('id', 'nombre', 'tipo', 'imagen')->get();
+            return response()->json(['bebidas' => $bebidas], 200);
+        }
+        catch(Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -45,6 +50,8 @@ class BebidaController extends Controller
 
     public function update(BebidaRequest $request, string $id)
     {
+        return $request->all();
+
         $bebidaExist = Bebida::find($id);
         if (!$bebidaExist) {
             return response()->json(['message' => 'Bebida no encontrada'], 404);
@@ -62,7 +69,7 @@ class BebidaController extends Controller
 
         $bebidaExist->update($data);
 
-        return response()->json(['bebida actualizada'], 200);
+        return response()->json(['bebida actualizada',$request->all()], 200);
     }
 
     public function show(Bebida $bebida)
