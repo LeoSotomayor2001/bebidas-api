@@ -22,13 +22,9 @@ class BebidaRequest extends FormRequest
 
         // Si es una solicitud POST (creación), la imagen es obligatoria.
         if ($this->isMethod('post')) {
-            $rules['imagen'] = 'required|image|max:2048|mimes:jpeg,png,jpg,gif,svg';
-        }
-
-        // Si es una solicitud PUT o PATCH (actualización), la imagen es opcional.
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
             $rules['imagen'] = 'sometimes|image|max:2048|mimes:jpeg,png,jpg,gif,svg';
         }
+
 
         return $rules;
     }

@@ -9,4 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::get('/bebidas/search', [BebidaController::class, 'searchBebidas']);
 Route::apiResource('/bebidas', BebidaController::class);

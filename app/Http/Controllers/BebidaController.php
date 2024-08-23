@@ -50,7 +50,7 @@ class BebidaController extends Controller
 
     public function update(BebidaRequest $request, string $id)
     {
-        return $request->all();
+   
 
         $bebidaExist = Bebida::find($id);
         if (!$bebidaExist) {
@@ -69,13 +69,32 @@ class BebidaController extends Controller
 
         $bebidaExist->update($data);
 
-        return response()->json(['bebida actualizada',$request->all()], 200);
+        return response()->json(['bebida actualizada',$bebidaExist], 200);
     }
 
     public function show(Bebida $bebida)
     {
         return response()->json(['bebida' => $bebida], 200);
     }
+
+    public function searchBebidas(Request $request) {
+        try{
+            // Capturar el parámetro 'nombre' de la solicitud GET
+            $nombre = $request->input('nombre');
+        
+            // Realizar la consulta a la base de datos
+            $bebidas = Bebida::select('nombre', 'tipo', 'imagen')
+                ->where('nombre', 'like', '%' . $nombre . '%')
+                ->get();
+        
+            return response()->json(['bebidas' => $bebidas], 200);
+
+        }
+        catch(Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    
 
     /**
      * Remove the specified resource from storage.
