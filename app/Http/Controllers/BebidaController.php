@@ -6,6 +6,7 @@ use App\Http\Requests\BebidaRequest;
 use App\Models\Bebida;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BebidaController extends Controller
 {
@@ -50,7 +51,7 @@ class BebidaController extends Controller
 
     public function update(BebidaRequest $request, string $id)
     {
-   
+
 
         $bebidaExist = Bebida::find($id);
         if (!$bebidaExist) {
@@ -81,12 +82,12 @@ class BebidaController extends Controller
         try{
             // Capturar el parámetro 'nombre' de la solicitud GET
             $nombre = $request->input('nombre');
-        
+
             // Realizar la consulta a la base de datos
             $bebidas = Bebida::select('nombre', 'tipo', 'imagen')
                 ->where('nombre', 'like', '%' . $nombre . '%')
                 ->get();
-        
+
             return response()->json(['bebidas' => $bebidas], 200);
 
         }
@@ -94,7 +95,7 @@ class BebidaController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
@@ -105,9 +106,11 @@ class BebidaController extends Controller
         if (!$bebidaExist) {
             return response()->json(['bebida no encontrada'], 404);
         }
-        $imagenPath = public_path() . '/storage/imagenes/' . $bebidaExist->imagen;
-        if (file_exists($imagenPath)) {
-            unlink($imagenPath);
+        $path = "imagenes/{$bebidaExist->imagen}"; // Ruta del archivo
+        //$imagenPath = public_path() . '/storage/imagenes/' . $bebidaExist->imagen;
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+            //unlink($imagenPath);
         }
         Bebida::destroy($id);
 
