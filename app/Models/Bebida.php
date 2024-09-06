@@ -12,6 +12,12 @@ class Bebida extends Model
         'nombre',
         'tipo',
         'imagen',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

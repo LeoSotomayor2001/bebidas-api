@@ -15,14 +15,17 @@ class BebidaController extends Controller
      */
     public function index()
     {
-        try{
-            $bebidas = Bebida::select('id', 'nombre', 'tipo', 'imagen')->get();
+        try {
+            $bebidas = Bebida::with('user:id,name,email') // Cargar la relación user y seleccionar campos específicos
+                ->select('id', 'nombre', 'tipo', 'imagen', 'user_id')
+                ->get();
+
             return response()->json(['bebidas' => $bebidas], 200);
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -44,6 +47,7 @@ class BebidaController extends Controller
             'nombre' => $request->nombre,
             'tipo' => $request->tipo,
             'imagen' => $imageName,
+            'user_id' => $request->user_id
         ]);
 
         return response()->json(['bebida' =>  $bebida]);
@@ -70,7 +74,7 @@ class BebidaController extends Controller
 
         $bebidaExist->update($data);
 
-        return response()->json(['bebida actualizada',$bebidaExist], 200);
+        return response()->json(['bebida actualizada', $bebidaExist], 200);
     }
 
     public function show(Bebida $bebida)
@@ -78,8 +82,9 @@ class BebidaController extends Controller
         return response()->json(['bebida' => $bebida], 200);
     }
 
-    public function searchBebidas(Request $request) {
-        try{
+    public function searchBebidas(Request $request)
+    {
+        try {
             // Capturar el parámetro 'nombre' de la solicitud GET
             $nombre = $request->input('nombre');
 
@@ -89,9 +94,7 @@ class BebidaController extends Controller
                 ->get();
 
             return response()->json(['bebidas' => $bebidas], 200);
-
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
