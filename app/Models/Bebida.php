@@ -19,5 +19,9 @@ class Bebida extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function usuariosFavoritos()
+    {
+        return $this->belongsToMany(User::class, 'favorite_bebidas')->withTimestamps();
+    }
 
 }

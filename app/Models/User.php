@@ -49,4 +49,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Bebida::class);
     }
+    public function bebidasFavoritas()
+    {
+        return $this->belongsToMany(Bebida::class, 'favorite_bebidas')->withTimestamps();
+    }
 }
