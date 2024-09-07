@@ -93,7 +93,6 @@ class BebidaController extends Controller
             ->select('id', 'nombre', 'tipo', 'imagen', 'user_id')
             ->where('nombre', 'like', '%' . $nombre . '%')
             ->get();
-
         return response()->json(['bebidas' => $bebidas], 200);
     } catch (Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
