@@ -6,6 +6,7 @@ use App\Http\Requests\BebidaRequest;
 use App\Models\Bebida;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class BebidaController extends Controller
@@ -53,12 +54,11 @@ class BebidaController extends Controller
         return response()->json(['bebida' =>  $bebida]);
     }
 
-    public function update(BebidaRequest $request, string $id)
+    public function update(BebidaRequest $request, Bebida $bebida)
     {
 
-
-        $bebidaExist = Bebida::find($id);
-        if (!$bebidaExist) {
+        Gate::authorize('update', $bebida);
+        if (!$bebida) {
             return response()->json(['message' => 'Bebida no encontrada'], 404);
         }
 
@@ -72,9 +72,9 @@ class BebidaController extends Controller
             $data['imagen'] = $imageName;
         }
 
-        $bebidaExist->update($data);
+        $bebida->update($data);
 
-        return response()->json(['bebida actualizada', $bebidaExist], 200);
+        return response()->json(['bebida actualizada', $bebida], 200);
     }
 
     public function show(Bebida $bebida)
@@ -83,39 +83,41 @@ class BebidaController extends Controller
     }
 
     public function searchBebidas(Request $request)
-    {
-        try {
-            // Capturar el parámetro 'nombre' de la solicitud GET
-            $nombre = $request->input('nombre');
+{
+    try {
+        // Capturar el parámetro 'nombre' de la solicitud GET
+        $nombre = $request->input('nombre');
 
-            // Realizar la consulta a la base de datos
-            $bebidas = Bebida::select('nombre', 'tipo', 'imagen')
-                ->where('nombre', 'like', '%' . $nombre . '%')
-                ->get();
+        // Realizar la consulta a la base de datos
+        $bebidas = Bebida::with('user:id,name,email') // Cargar la relación user y seleccionar campos específicos
+            ->select('id', 'nombre', 'tipo', 'imagen', 'user_id')
+            ->where('nombre', 'like', '%' . $nombre . '%')
+            ->get();
 
-            return response()->json(['bebidas' => $bebidas], 200);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return response()->json(['bebidas' => $bebidas], 200);
+    } catch (Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, string $id)
+    public function destroy(Request $request, Bebida $bebida)
     {
-        $bebidaExist = Bebida::find($id);
-        if (!$bebidaExist) {
+        Gate::authorize('delete', $bebida);
+
+        if (!$bebida) {
             return response()->json(['bebida no encontrada'], 404);
         }
-        $path = "imagenes/{$bebidaExist->imagen}"; // Ruta del archivo
+        $path = "imagenes/{$bebida->imagen}"; // Ruta del archivo
         //$imagenPath = public_path() . '/storage/imagenes/' . $bebidaExist->imagen;
         if (Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path);
             //unlink($imagenPath);
         }
-        Bebida::destroy($id);
+        Bebida::destroy($bebida->id);
 
         return response()->json(['bebida eliminada'], 200);
     }
