@@ -58,7 +58,8 @@ class BebidaController extends Controller
     {
 
         Gate::authorize('update', $bebida);
-        if (!$bebida) {
+        $bebidaExist=Bebida::find($bebida->id);
+        if (!$bebidaExist) {
             return response()->json(['message' => 'Bebida no encontrada'], 404);
         }
 
