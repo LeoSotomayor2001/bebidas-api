@@ -56,14 +56,13 @@ class BebidaController extends Controller
 
     public function update(BebidaRequest $request, Bebida $bebida)
     {
-
+        // Autorizar la acción de actualización
         Gate::authorize('update', $bebida);
-        if (!$bebida) {
-            return response()->json(['message' => 'Bebida no encontrada'], 404);
-        }
 
+        // Recoger solo los campos necesarios del request
         $data = $request->only(['nombre', 'tipo']);
 
+        // Si se sube una imagen, procesarla
         if ($request->hasFile('imagen')) {
             // Guardar la imagen en la carpeta "public/imagenes"
             $imagePath = $request->file('imagen')->store('imagenes', 'public');
@@ -72,10 +71,13 @@ class BebidaController extends Controller
             $data['imagen'] = $imageName;
         }
 
+        // Actualizar los datos de la bebida
         $bebida->update($data);
 
-        return response()->json(['bebida actualizada', $bebida], 200);
+        // Responder con un mensaje de éxito
+        return response()->json(['message' => 'Bebida actualizada', 'bebida' => $bebida], 200);
     }
+
 
     public function show(Bebida $bebida)
     {
@@ -83,10 +85,10 @@ class BebidaController extends Controller
     }
 
     public function searchBebidas(Request $request)
-{
-    try {
-        // Capturar el parámetro 'nombre' de la solicitud GET
-        $nombre = $request->input('nombre');
+    {
+        try {
+            // Capturar el parámetro 'nombre' de la solicitud GET
+            $nombre = $request->input('nombre');
 
         // Realizar la consulta a la base de datos
         $bebidas = Bebida::with('user:id,name,email') // Cargar la relación user y seleccionar campos específicos
@@ -106,10 +108,6 @@ class BebidaController extends Controller
     public function destroy(Request $request, Bebida $bebida)
     {
         Gate::authorize('delete', $bebida);
-
-        if (!$bebida) {
-            return response()->json(['bebida no encontrada'], 404);
-        }
         $path = "imagenes/{$bebida->imagen}"; // Ruta del archivo
         //$imagenPath = public_path() . '/storage/imagenes/' . $bebidaExist->imagen;
         if (Storage::disk('public')->exists($path)) {
