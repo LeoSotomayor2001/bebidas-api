@@ -1,0 +1,23 @@
+{
+    "version": 2,
+    "functions": {
+      "api/index.php": {
+        "runtime": "vercel-php@0.6.0"
+      }
+    },
+    "routes": [
+      { "src": "/(.*)", "dest": "/api/index.php" }
+    ],
+    "env": {
+      "APP_ENV": "production",
+      "APP_DEBUG": "true",
+      "APP_URL": "https://bebidas-app-leodomi.vercel.app",
+      "APP_KEY": "your-app-key",
+      "DB_CONNECTION": "mysql",
+      "DB_HOST": "your-db-host",
+      "DB_PORT": "3306",
+      "DB_DATABASE": "bebidas-api",
+      "DB_USERNAME": "root",
+      "DB_PASSWORD": "1234"
+    }
+  }
