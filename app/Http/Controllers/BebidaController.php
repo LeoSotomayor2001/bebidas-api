@@ -79,11 +79,6 @@ class BebidaController extends Controller
     }
 
 
-    public function show(Bebida $bebida)
-    {
-        return response()->json(['bebida' => $bebida], 200);
-    }
-
     public function searchBebidas(Request $request)
     {
         try {

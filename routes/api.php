@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BebidaController;
 use App\Http\Controllers\BebidaFavoritaController;
 use App\Http\Controllers\ImageController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function(){
@@ -23,9 +22,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('bebidas/{bebida}/favorita', [BebidaFavoritaController::class, 'addFavorite']);
     Route::delete('bebidas/{bebida}/favorita', [BebidaFavoritaController::class, 'removeFavorite']);
 })->middleware('auth:sanctum');
+Route::get('/imagen/{filename}', [ImageController::class, 'show']);
 
 //Autenticacion de usuarios
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/imagen/{filename}', [ImageController::class, 'show']);
