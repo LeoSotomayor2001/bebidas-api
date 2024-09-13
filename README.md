@@ -34,7 +34,7 @@ Tiene como finalidad practicar la creacion y manejo de APIs en laravel y su post
     ```bash
     php artisan migrate
 
-    ## Uso
+## Uso
 
 ### Autenticación de Usuarios
 
